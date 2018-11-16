@@ -1,0 +1,1 @@
+include ':app', ':base', ':instantapp', ':com', ':plugin1', ':plugin2'
