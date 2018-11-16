@@ -7,6 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.robin.com.ICommon;
 
 import java.io.Closeable;
 import java.io.File;
@@ -18,22 +22,27 @@ import dalvik.system.DexClassLoader;
 
 public class MainActivity extends AppCompatActivity {
 
+    final static String APK_1 = "plugin1.apk";
+    final static String APK_2 = "plugin2.apk";
+
+    TextView textView;
+    ImageView imageView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        File[] files = getFilesDir().listFiles();
-        for (File file : files) {
-            AssetsUtils.pluginInfos.put(file.getAbsolutePath(),new PluginInfos(file.getAbsolutePath(), DexClassLoader.getSystemClassLoader()));
-        }
+
+        move(APK_1, this);
+        move(APK_2, this);
 
 
-        move("plugin1.apk", this);
-        move("plugin2.apk", this);
+        AssetsUtils.extractInfo(this, APK_1);
+        AssetsUtils.extractInfo(this, APK_2);
 
-        AssetsUtils.addAssetPath(this, "plugin1.apk");
-        AssetsUtils.addAssetPath(this, "plugin2.apk");
+        textView = findViewById(R.id.textView);
+        imageView = findViewById(R.id.imageView);
     }
 
 
@@ -70,10 +79,43 @@ public class MainActivity extends AppCompatActivity {
     public void getPlugin(View view) {
         int i = view.getId();
         if (i == R.id.button2) {
+            PluginInfo pluginInfo = AssetsUtils.getPluginInfo(APK_1);
+            AssetsUtils.addAssetPath(this, APK_1);
 
 
+            DexClassLoader classLoader = pluginInfo.getClassLoader();
+            try {
+                Class PluginResource = classLoader.loadClass("com.robin.plugin1.PluginResource");
+                ICommon pluginObject = (ICommon) PluginResource.newInstance();
+
+                textView.setText(pluginObject.getString());
+                imageView.setImageResource(pluginObject.getDrawable());
+            } catch (ClassNotFoundException e) {
+                Log.v("robin", e.getMessage());
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            }
         } else if (i == R.id.button3) {
+            PluginInfo pluginInfo = AssetsUtils.getPluginInfo(APK_2);
+            AssetsUtils.addAssetPath(this, APK_2);
 
+
+            DexClassLoader classLoader = pluginInfo.getClassLoader();
+            try {
+                Class PluginResource = classLoader.loadClass("com.robin.plugin2.PluginResource");
+                ICommon pluginObject = (ICommon) PluginResource.newInstance();
+
+                textView.setText(pluginObject.getString());
+                imageView.setImageResource(pluginObject.getDrawable());
+            } catch (ClassNotFoundException e) {
+                Log.v("robin", e.getMessage());
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            }
         } else {
         }
     }

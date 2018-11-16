@@ -22,5 +22,4 @@ dependencies {
     api 'com.android.support.constraint:constraint-layout:1.1.3'
     application project(':app')
     feature project(':app')
-    implementation project(':com')
 }

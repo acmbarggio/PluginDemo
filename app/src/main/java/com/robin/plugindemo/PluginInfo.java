@@ -8,11 +8,11 @@ import dalvik.system.DexClassLoader;
 /**
  * Created by robin on 11/16/18.
  */
-class PluginInfos {
+class PluginInfo {
     private String dexPath;
     private DexClassLoader classLoader;
 
-    public PluginInfos(String dexPath, DexClassLoader dexClassLoader) {
+    public PluginInfo(String dexPath, DexClassLoader dexClassLoader) {
         this.dexPath = dexPath;
         this.classLoader = dexClassLoader;
     }
